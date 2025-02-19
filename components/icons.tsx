@@ -122,3 +122,22 @@ export const SpinnerIcon = ({ size = 16 }: { size?: number }) => (
     </defs>
   </svg>
 );
+
+export const VercelIcon = ({ size = 17 }) => {
+  return (
+    <svg
+      height={size}
+      strokeLinejoin="round"
+      viewBox="0 0 16 16"
+      width={size}
+      style={{ color: "currentcolor" }}
+    >
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M8 1L16 15H0L8 1Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+};
