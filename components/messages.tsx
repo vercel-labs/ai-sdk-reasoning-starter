@@ -1,9 +1,13 @@
+"use client";
+
+import cn from "classnames";
 import Markdown from "react-markdown";
 import { markdownComponents } from "./markdown-components";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon, SpinnerIcon } from "./icons";
-import cn from "classnames";
+import { UIMessage } from "ai";
+import { UseChatHelpers } from "@ai-sdk/react";
 
 interface ReasoningMessagePartProps {
   reasoning: string;
@@ -74,6 +78,80 @@ export function ReasoningMessagePart({
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+interface TextMessagePartProps {
+  text: string;
+}
+
+export function TextMessagePart({ text }: TextMessagePartProps) {
+  return (
+    <div className="flex flex-col gap-4">
+      <Markdown components={markdownComponents}>{text}</Markdown>
+    </div>
+  );
+}
+
+interface MessagesProps {
+  messages: Array<UIMessage>;
+  status: UseChatHelpers["status"];
+}
+
+export function Messages({ messages, status }: MessagesProps) {
+  const messagesRef = useRef<HTMLDivElement>(null);
+  const messagesLength = useMemo(() => messages.length, [messages]);
+
+  useEffect(() => {
+    if (messagesRef.current) {
+      messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    }
+  }, [messagesLength]);
+
+  return (
+    <div className="flex flex-col gap-4 overflow-y-scroll" ref={messagesRef}>
+      {messages.map((message) => (
+        <div
+          key={message.id}
+          className={cn(
+            "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-12",
+            {
+              "ml-auto dark:bg-zinc-800 bg-zinc-200 p-2 rounded-xl":
+                message.role === "user",
+              "": message.role === "assistant",
+            },
+          )}
+        >
+          {message.parts.map((part, partIndex) => {
+            if (part.type === "text") {
+              return (
+                <TextMessagePart
+                  key={`${message.id}-${partIndex}`}
+                  text={part.text}
+                />
+              );
+            }
+
+            if (part.type === "reasoning") {
+              return (
+                <ReasoningMessagePart
+                  key={`${message.id}-${partIndex}`}
+                  reasoning={part.reasoning}
+                  isReasoning={
+                    status === "streaming" &&
+                    partIndex === message.parts.length - 1
+                  }
+                />
+              );
+            }
+          })}
+        </div>
+      ))}
+
+      {status === "submitted" && (
+        <div className="text-zinc-500 mb-12">Hmm...</div>
+      )}
     </div>
   );
 }

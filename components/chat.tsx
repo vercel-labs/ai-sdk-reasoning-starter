@@ -1,16 +1,14 @@
 "use client";
 
 import cn from "classnames";
-import Link from "next/link";
-import Markdown from "react-markdown";
+import { toast } from "sonner";
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
-import { markdownComponents } from "./markdown-components";
-import { ReasoningMessagePart } from "./messages";
+import { Messages } from "./messages";
 import { Drawer } from "vaul";
 import { models } from "@/lib/models";
+import { Footnote } from "./footnote";
 import { ArrowUpIcon, ChevronDownIcon, StopIcon } from "./icons";
-import { toast } from "sonner";
 
 export function Chat() {
   const [input, setInput] = useState<string>("");
@@ -37,53 +35,7 @@ export function Chat() {
         })}
       >
         {messages.length > 0 ? (
-          <div className="flex flex-col gap-4 overflow-y-scroll">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={cn(
-                  "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-12",
-                  {
-                    "ml-auto dark:bg-zinc-800 bg-zinc-200 p-2 rounded-xl":
-                      message.role === "user",
-                    "": message.role === "assistant",
-                  },
-                )}
-              >
-                {message.parts.map((part, partIndex) => {
-                  if (part.type === "text") {
-                    return (
-                      <div
-                        key={`${message.id}-${partIndex}`}
-                        className="flex flex-col gap-4"
-                      >
-                        <Markdown components={markdownComponents}>
-                          {part.text}
-                        </Markdown>
-                      </div>
-                    );
-                  }
-
-                  if (part.type === "reasoning") {
-                    return (
-                      <ReasoningMessagePart
-                        key={`${message.id}-${partIndex}`}
-                        reasoning={part.reasoning}
-                        isReasoning={
-                          status === "streaming" &&
-                          partIndex === message.parts.length - 1
-                        }
-                      />
-                    );
-                  }
-                })}
-              </div>
-            ))}
-
-            {status === "submitted" && (
-              <div className="text-zinc-500">Hmm...</div>
-            )}
-          </div>
+          <Messages messages={messages} status={status} />
         ) : (
           <div className="flex flex-col gap-0.5 sm:text-2xl text-xl">
             <div className="flex flex-row gap-2 items-center">
@@ -167,34 +119,7 @@ export function Chat() {
             </div>
           </div>
 
-          <div className="text-xs text-zinc-400">
-            This preview is built using{" "}
-            <Link
-              className="underline underline-offset-2"
-              href="https://nextjs.org/"
-              target="_blank"
-            >
-              Next.js
-            </Link>{" "}
-            and the{" "}
-            <Link
-              className="underline underline-offset-2"
-              href="https://sdk.vercel.ai/"
-              target="_blank"
-            >
-              AI SDK
-            </Link>
-            . Read more about how to use reasoning models in your applications
-            in our{" "}
-            <Link
-              className="underline underline-offset-2"
-              href="https://sdk.vercel.ai/docs/ai-sdk-ui/chatbot#reasoning"
-              target="_blank"
-            >
-              documentation
-            </Link>
-            .
-          </div>
+          <Footnote />
 
           <Drawer.Portal>
             <Drawer.Overlay className="fixed inset-0 bg-black/40" />
