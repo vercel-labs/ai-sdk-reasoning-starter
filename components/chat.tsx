@@ -9,7 +9,7 @@ import { markdownComponents } from "./markdown-components";
 import { ReasoningMessagePart } from "./messages";
 import { Drawer } from "vaul";
 import { models } from "@/lib/models";
-import { ArrowUpIcon, ChevronDownIcon } from "./icons";
+import { ArrowUpIcon, ChevronDownIcon, StopIcon } from "./icons";
 import { toast } from "sonner";
 
 export function Chat() {
@@ -17,7 +17,7 @@ export function Chat() {
   const [selectedModelId, setSelectedModelId] = useState<string>("deepseek-r1");
   const selectedModel = models.find((model) => model.id === selectedModelId);
 
-  const { messages, append, status } = useChat({
+  const { messages, append, status, stop } = useChat({
     body: {
       selectedModelId,
     },
@@ -25,6 +25,8 @@ export function Chat() {
       toast.error("An error occurred, please try again!");
     },
   });
+
+  const isGeneratingResponse = ["streaming", "submitted"].includes(status);
 
   return (
     <Drawer.Root>
@@ -107,6 +109,14 @@ export function Chat() {
                 if (event.key === "Enter" && !event.shiftKey) {
                   event.preventDefault();
 
+                  if (isGeneratingResponse) {
+                    toast.error(
+                      "Please wait for the model to finish its response!",
+                    );
+
+                    return;
+                  }
+
                   append({
                     role: "user",
                     content: input,
@@ -120,7 +130,7 @@ export function Chat() {
 
             <div className="absolute bottom-2.5 right-2.5 flex flex-row gap-2">
               <Drawer.Trigger>
-                <div className="w-fit text-sm p-1.5 rounded-md flex flex-row items-center gap-0.5 dark:hover:bg-zinc-700 hover:bg-zinc-200 cursor-pointer">
+                <div className="w-fit text-sm p-1.5 rounded-lg flex flex-row items-center gap-0.5 dark:hover:bg-zinc-700 hover:bg-zinc-200 cursor-pointer">
                   <div>
                     {selectedModel ? selectedModel.name : "Models Unavailable!"}
                   </div>
@@ -132,30 +142,27 @@ export function Chat() {
 
               <button
                 className={cn(
-                  "size-8 flex flex-row justify-center items-center dark:bg-zinc-100 bg-zinc-900 dark:text-zinc-900 text-zinc-100 p-1.5 rounded-full hover:bg-zinc-800",
+                  "size-8 flex flex-row justify-center items-center dark:bg-zinc-100 bg-zinc-900 dark:text-zinc-900 text-zinc-100 p-1.5 rounded-full hover:bg-zinc-800 dark:hover:bg-zinc-300",
                   {
-                    "dark:bg-zinc-200 dark:text-zinc-500 cursor-not-allowed":
-                      status === "streaming" ||
-                      status === "submitted" ||
-                      input === "",
+                    "dark:bg-zinc-200 dark:text-zinc-500":
+                      isGeneratingResponse || input === "",
                   },
                 )}
                 onClick={() => {
-                  append({
-                    role: "user",
-                    content: input,
-                    createdAt: new Date(),
-                  });
+                  if (isGeneratingResponse) {
+                    stop();
+                  } else {
+                    append({
+                      role: "user",
+                      content: input,
+                      createdAt: new Date(),
+                    });
+                  }
 
                   setInput("");
                 }}
-                disabled={
-                  status === "streaming" ||
-                  status === "submitted" ||
-                  input === ""
-                }
               >
-                <ArrowUpIcon />
+                {isGeneratingResponse ? <StopIcon /> : <ArrowUpIcon />}
               </button>
             </div>
           </div>
