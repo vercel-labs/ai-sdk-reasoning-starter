@@ -9,6 +9,7 @@ import { Drawer } from "vaul";
 import { models } from "@/lib/models";
 import { Footnote } from "./footnote";
 import { ArrowUpIcon, ChevronDownIcon, StopIcon } from "./icons";
+import { Input } from "./input";
 
 export function Chat() {
   const [input, setInput] = useState<string>("");
@@ -16,6 +17,7 @@ export function Chat() {
   const selectedModel = models.find((model) => model.id === selectedModelId);
 
   const { messages, append, status, stop } = useChat({
+    id: "primary",
     body: {
       selectedModelId,
     },
@@ -29,15 +31,18 @@ export function Chat() {
   return (
     <Drawer.Root>
       <div
-        className={cn("px-4 md:px-0 pb-4 flex flex-col md:w-1/2 w-full h-dvh", {
-          "justify-between": messages.length > 0,
-          "justify-center gap-4": messages.length === 0,
-        })}
+        className={cn(
+          "px-4 md:px-0 pb-4 flex flex-col h-dvh items-center w-full",
+          {
+            "justify-between": messages.length > 0,
+            "justify-center gap-4": messages.length === 0,
+          },
+        )}
       >
         {messages.length > 0 ? (
           <Messages messages={messages} status={status} />
         ) : (
-          <div className="flex flex-col gap-0.5 sm:text-2xl text-xl">
+          <div className="flex flex-col gap-0.5 sm:text-2xl text-xl md:w-1/2 w-full">
             <div className="flex flex-row gap-2 items-center">
               <div>Welcome to the Reasoning Preview.</div>
             </div>
@@ -47,37 +52,13 @@ export function Chat() {
           </div>
         )}
 
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 md:w-1/2 w-full">
           <div className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1 bg-zinc-100">
-            <textarea
-              className="resize-none w-full min-h-20 outline-none bg-transparent placeholder:text-zinc-400"
-              placeholder="Send a message"
-              value={input}
-              autoFocus
-              onChange={(event) => {
-                setInput(event.currentTarget.value);
-              }}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" && !event.shiftKey) {
-                  event.preventDefault();
-
-                  if (isGeneratingResponse) {
-                    toast.error(
-                      "Please wait for the model to finish its response!",
-                    );
-
-                    return;
-                  }
-
-                  append({
-                    role: "user",
-                    content: input,
-                    createdAt: new Date(),
-                  });
-
-                  setInput("");
-                }
-              }}
+            <Input
+              input={input}
+              setInput={setInput}
+              selectedModelId={selectedModelId}
+              isGeneratingResponse={isGeneratingResponse}
             />
 
             <div className="absolute bottom-2.5 right-2.5 flex flex-row gap-2">
@@ -94,13 +75,17 @@ export function Chat() {
 
               <button
                 className={cn(
-                  "size-8 flex flex-row justify-center items-center dark:bg-zinc-100 bg-zinc-900 dark:text-zinc-900 text-zinc-100 p-1.5 rounded-full hover:bg-zinc-800 dark:hover:bg-zinc-300",
+                  "size-8 flex flex-row justify-center items-center dark:bg-zinc-100 bg-zinc-900 dark:text-zinc-900 text-zinc-100 p-1.5 rounded-full hover:bg-zinc-800 dark:hover:bg-zinc-300 hover:scale-105 active:scale-95 transition-all",
                   {
                     "dark:bg-zinc-200 dark:text-zinc-500":
                       isGeneratingResponse || input === "",
                   },
                 )}
                 onClick={() => {
+                  if (input === "") {
+                    return;
+                  }
+
                   if (isGeneratingResponse) {
                     stop();
                   } else {

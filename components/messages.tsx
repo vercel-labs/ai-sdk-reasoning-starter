@@ -110,47 +110,53 @@ export function Messages({ messages, status }: MessagesProps) {
   }, [messagesLength]);
 
   return (
-    <div className="flex flex-col gap-4 overflow-y-scroll" ref={messagesRef}>
+    <div
+      className="flex flex-col gap-8 overflow-y-scroll items-center w-full"
+      ref={messagesRef}
+    >
       {messages.map((message) => (
         <div
           key={message.id}
           className={cn(
-            "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-12",
-            {
-              "ml-auto dark:bg-zinc-800 bg-zinc-200 p-2 rounded-xl":
-                message.role === "user",
-              "": message.role === "assistant",
-            },
+            "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-12 md:w-1/2 w-full",
           )}
         >
-          {message.parts.map((part, partIndex) => {
-            if (part.type === "text") {
-              return (
-                <TextMessagePart
-                  key={`${message.id}-${partIndex}`}
-                  text={part.text}
-                />
-              );
-            }
+          <div
+            className={cn("flex flex-col gap-4", {
+              "dark:bg-zinc-800 bg-zinc-200 p-2 rounded-xl w-fit ml-auto":
+                message.role === "user",
+              "": message.role === "assistant",
+            })}
+          >
+            {message.parts.map((part, partIndex) => {
+              if (part.type === "text") {
+                return (
+                  <TextMessagePart
+                    key={`${message.id}-${partIndex}`}
+                    text={part.text}
+                  />
+                );
+              }
 
-            if (part.type === "reasoning") {
-              return (
-                <ReasoningMessagePart
-                  key={`${message.id}-${partIndex}`}
-                  reasoning={part.reasoning}
-                  isReasoning={
-                    status === "streaming" &&
-                    partIndex === message.parts.length - 1
-                  }
-                />
-              );
-            }
-          })}
+              if (part.type === "reasoning") {
+                return (
+                  <ReasoningMessagePart
+                    key={`${message.id}-${partIndex}`}
+                    reasoning={part.reasoning}
+                    isReasoning={
+                      status === "streaming" &&
+                      partIndex === message.parts.length - 1
+                    }
+                  />
+                );
+              }
+            })}
+          </div>
         </div>
       ))}
 
       {status === "submitted" && (
-        <div className="text-zinc-500 mb-12">Hmm...</div>
+        <div className="text-zinc-500 mb-12 md:w-1/2 w-full">Hmm...</div>
       )}
     </div>
   );
