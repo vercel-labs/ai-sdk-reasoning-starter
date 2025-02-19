@@ -20,7 +20,7 @@ export const models: Array<Model> = [
     id: "deepseek-r1",
     name: "DeepSeek R1",
     description:
-      "A specialized model using Chain of Thought reasoning for improved accuracy, with visible reasoning steps. Served by Fireworks AI.",
+      "DeepSeek's specialized model using Chain of Thought reasoning for improved accuracy, with visible reasoning steps. Served by Fireworks AI.",
   },
   {
     id: "o3-mini",

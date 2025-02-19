@@ -29,7 +29,7 @@ export function Chat() {
   return (
     <Drawer.Root>
       <div
-        className={cn("px-4 sm:px-0 pb-4 flex flex-col md:w-1/2 w-full h-dvh", {
+        className={cn("px-4 md:px-0 pb-4 flex flex-col md:w-1/2 w-full h-dvh", {
           "justify-between": messages.length > 0,
           "justify-center gap-4": messages.length === 0,
         })}
@@ -42,7 +42,7 @@ export function Chat() {
                 className={cn(
                   "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-12",
                   {
-                    "ml-auto bg-zinc-800 p-2 rounded-xl":
+                    "ml-auto dark:bg-zinc-800 bg-zinc-200 p-2 rounded-xl":
                       message.role === "user",
                     "": message.role === "assistant",
                   },
@@ -77,20 +77,24 @@ export function Chat() {
                 })}
               </div>
             ))}
+
+            {status === "submitted" && (
+              <div className="text-zinc-500">Hmm...</div>
+            )}
           </div>
         ) : (
-          <div className="flex flex-col gap-0.5">
-            <div className="text-2xl flex flex-row gap-2 items-center">
+          <div className="flex flex-col gap-0.5 sm:text-2xl text-xl">
+            <div className="flex flex-row gap-2 items-center">
               <div>Welcome to the Reasoning Preview.</div>
             </div>
-            <div className="text-2xl dark:text-zinc-500">
+            <div className="dark:text-zinc-500 text-zinc-400">
               What would you like me to think about today?
             </div>
           </div>
         )}
 
         <div className="flex flex-col gap-4">
-          <div className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1">
+          <div className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1 bg-zinc-100">
             <textarea
               className="resize-none w-full min-h-20 outline-none bg-transparent placeholder:text-zinc-400"
               placeholder="Send a message"
@@ -116,19 +120,21 @@ export function Chat() {
 
             <div className="absolute bottom-2.5 right-2.5 flex flex-row gap-2">
               <Drawer.Trigger>
-                <div className="w-fit text-sm p-1.5 rounded-md flex flex-row items-center gap-0.5 hover:bg-zinc-700 cursor-pointer">
+                <div className="w-fit text-sm p-1.5 rounded-md flex flex-row items-center gap-0.5 dark:hover:bg-zinc-700 hover:bg-zinc-200 cursor-pointer">
                   <div>
                     {selectedModel ? selectedModel.name : "Models Unavailable!"}
                   </div>
-                  <ChevronDownIcon />
+                  <div className="text-zinc-500">
+                    <ChevronDownIcon />
+                  </div>
                 </div>
               </Drawer.Trigger>
 
               <button
                 className={cn(
-                  "size-8 flex flex-row justify-center items-center dark:bg-zinc-100 dark:text-zinc-900 p-1.5 rounded-full hover:bg-zinc-200",
+                  "size-8 flex flex-row justify-center items-center dark:bg-zinc-100 bg-zinc-900 dark:text-zinc-900 text-zinc-100 p-1.5 rounded-full hover:bg-zinc-800",
                   {
-                    "bg-zinc-200 text-zinc-500 cursor-not-allowed":
+                    "dark:bg-zinc-200 dark:text-zinc-500 cursor-not-allowed":
                       status === "streaming" ||
                       status === "submitted" ||
                       input === "",
@@ -191,7 +197,7 @@ export function Chat() {
                   <Drawer.Title className="text-xl">
                     Choose a Model
                   </Drawer.Title>
-                  <Drawer.Description className="dark:text-zinc-400">
+                  <Drawer.Description className="dark:text-zinc-400 text-zinc-500">
                     Select a reasoning model from below to use for the preview.
                   </Drawer.Description>
                 </div>
@@ -201,13 +207,15 @@ export function Chat() {
                     <button
                       key={model.id}
                       className={cn(
-                        "flex flex-row gap-4 p-2 rounded-lg hover:bg-zinc-600",
-                        model.id === selectedModelId ? "bg-zinc-700" : "",
+                        "flex flex-row gap-4 p-2 rounded-lg dark:hover:bg-zinc-600 hover:bg-zinc-300",
+                        model.id === selectedModelId
+                          ? "dark:bg-zinc-700 bg-zinc-200"
+                          : "",
                       )}
                       onClick={() => setSelectedModelId(model.id)}
                     >
                       <div className="min-w-32 text-left">{model.name}</div>
-                      <div className="text-zinc-300 text-left">
+                      <div className="dark:text-zinc-300 text-zinc-600 text-left">
                         {model.description}
                       </div>
                     </button>
