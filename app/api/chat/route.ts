@@ -1,6 +1,7 @@
-import { fireworks } from "@ai-sdk/fireworks";
+import { myProvider } from "@/lib/models";
 import {
   extractReasoningMiddleware,
+  Message,
   smoothStream,
   streamText,
   wrapLanguageModel,
@@ -8,13 +9,17 @@ import {
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
-  const { messages } = await request.json();
+  const {
+    messages,
+    selectedModelId,
+  }: { messages: Array<Message>; selectedModelId: string } =
+    await request.json();
 
   const stream = streamText({
     system:
       "you are a friendly assistant. do not use emojis in your responses.",
     model: wrapLanguageModel({
-      model: fireworks("accounts/fireworks/models/deepseek-r1"),
+      model: myProvider.languageModel(selectedModelId),
       middleware: extractReasoningMiddleware({ tagName: "think" }),
     }),
     experimental_transform: [
@@ -27,5 +32,8 @@ export async function POST(request: NextRequest) {
 
   return stream.toDataStreamResponse({
     sendReasoning: true,
+    getErrorMessage: () => {
+      return `An error occurred, please try again!`;
+    },
   });
 }
