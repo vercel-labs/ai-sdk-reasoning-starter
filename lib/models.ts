@@ -25,6 +25,6 @@ export const models: Array<Model> = [
     id: "claude-3.5-sonnet",
     name: "Claude 3.5 Sonnet",
     description:
-      "Claude 3.5 Sonnet strikes the ideal balance between intelligence and speed—particularly for enterprise workloads.",
+      "Claude 3.5 Sonnet is Anthropic's model that strikes the ideal balance between intelligence and speed – particularly for enterprise workloads.",
   },
 ];
