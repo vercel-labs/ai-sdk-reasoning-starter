@@ -45,7 +45,7 @@ export function Chat() {
         ) : (
           <div className="flex flex-col gap-0.5 sm:text-2xl text-xl md:w-1/2 w-full">
             <div className="flex flex-row gap-2 items-center">
-              <div>Welcome to the Reasoning Preview.</div>
+              <div>Welcome to the AI SDK Reasoning Preview.</div>
             </div>
             <div className="dark:text-zinc-500 text-zinc-400">
               What would you like me to think about today?
