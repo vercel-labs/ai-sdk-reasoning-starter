@@ -1,7 +1,7 @@
 import { Toaster } from 'sonner';
 import { GeistSans } from 'geist/font/sans';
 import { GeistMono } from 'geist/font/mono';
-
+import Link from 'next/link';
 import type { Metadata } from 'next';
 
 import './globals.css';
@@ -25,7 +25,7 @@ export default function RootLayout({
           <div className="flex justify-between items-center p-4">
             <div className="flex flex-row items-center gap-2 shrink-0 ">
               <span className="jsx-e3e12cc6f9ad5a71 flex flex-row items-center gap-2 home-links">
-                <a
+                <Link
                   className="text-zinc-800 dark:text-zinc-100 -translate-y-[.5px]"
                   rel="noopener"
                   target="_blank"
@@ -46,7 +46,7 @@ export default function RootLayout({
                       fill="currentColor"
                     />
                   </svg>
-                </a>
+                </Link>
                 <div className="jsx-e3e12cc6f9ad5a71 w-4 text-lg text-center text-zinc-300 dark:text-zinc-600">
                   <svg
                     data-testid="geist-icon"
