@@ -6,7 +6,6 @@ export async function POST(request: NextRequest) {
   const {
     messages,
     selectedModelId,
-    isReasoningEnabled,
   }: {
     messages: Array<Message>;
     selectedModelId: string;

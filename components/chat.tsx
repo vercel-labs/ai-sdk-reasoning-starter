@@ -15,7 +15,7 @@ export function Chat() {
   const [selectedModelId] = useState<string>("claude-3.7-sonnet");
   const selectedModel = models.find((model) => model.id === selectedModelId);
 
-  const [isReasoningEnabled, setIsReasoningEnabled] = useState<boolean>(true);
+  const [isReasoningEnabled] = useState<boolean>(true);
 
   const { messages, append, status, stop } = useChat({
     id: "primary",
