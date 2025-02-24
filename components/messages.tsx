@@ -74,6 +74,15 @@ export function ReasoningMessagePart({
             variants={variants}
             transition={{ duration: 0.2, ease: "easeInOut" }}
           >
+            {/* {part.reasoningDetails.map((detail, detailIndex) =>
+              detail.type === "text" ? (
+                <Markdown key={detailIndex} components={markdownComponents}>
+                  {detail.text}
+                </Markdown>
+              ) : (
+                "<redacted>"
+              ),
+            )} */}
             <Markdown components={markdownComponents}>{reasoning}</Markdown>
           </motion.div>
         )}
