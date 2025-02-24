@@ -26,7 +26,7 @@ export default function RootLayout({
             <div className="flex flex-row items-center gap-2 shrink-0 ">
               <span className="jsx-e3e12cc6f9ad5a71 flex flex-row items-center gap-2 home-links">
                 <a
-                  className="text-zinc-800 dark:text-zinc-100 -translate-y-[.5px] pl-4"
+                  className="text-zinc-800 dark:text-zinc-100 -translate-y-[.5px]"
                   rel="noopener"
                   target="_blank"
                   href="https://vercel.com/"
