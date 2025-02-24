@@ -65,7 +65,7 @@ export default function RootLayout({
                   </svg>
                 </div>
                 <div className="jsx-e3e12cc6f9ad5a71 flex flex-row items-center gap-4">
-                  <a className="flex flex-row items-center gap-2" href="/">
+                  <Link className="flex flex-row items-center gap-2" href="/">
                     <div className="jsx-e3e12cc6f9ad5a71 flex flex-row items-center gap-2">
                       <div className="jsx-e3e12cc6f9ad5a71 text-zinc-800 dark:text-zinc-100">
                         <svg
@@ -97,7 +97,7 @@ export default function RootLayout({
                         </span>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 </div>
               </span>
             </div>
