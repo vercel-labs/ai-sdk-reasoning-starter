@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 
 import './globals.css';
 import { DeployButton } from '@/components/deploy-button';
+import { StarButton } from '@/components/star-button';
 
 export const metadata: Metadata = {
   title: 'Reasoning Preview',
@@ -102,6 +103,7 @@ export default function RootLayout({
               </span>
             </div>
             <div className="flex flex-row items-center gap-2 shrink-0">
+              <StarButton />
               <DeployButton />
             </div>
           </div>
