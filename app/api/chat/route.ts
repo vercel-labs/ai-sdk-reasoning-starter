@@ -1,11 +1,5 @@
 import { myProvider } from "@/lib/models";
-import {
-  extractReasoningMiddleware,
-  Message,
-  smoothStream,
-  streamText,
-  wrapLanguageModel,
-} from "ai";
+import { Message, smoothStream, streamText } from "ai";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -25,15 +19,12 @@ export async function POST(request: NextRequest) {
     providerOptions: {
       anthropic: {
         thinking: {
-          type: isReasoningEnabled ? "enabled" : "disabled",
+          type: "enabled",
           budgetTokens: 12000,
         },
       },
     },
-    model: wrapLanguageModel({
-      model: myProvider.languageModel(selectedModelId),
-      middleware: extractReasoningMiddleware({ tagName: "think" }),
-    }),
+    model: myProvider.languageModel(selectedModelId),
     experimental_transform: [
       smoothStream({
         chunking: "word",
