@@ -1,16 +1,17 @@
-import { Toaster } from "sonner";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
-import Link from "next/link";
-import type { Metadata } from "next";
+import { Toaster } from 'sonner';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
+import Link from 'next/link';
+import type { Metadata } from 'next';
 
-import "./globals.css";
-import { DeployButton } from "@/components/deploy-button";
+import './globals.css';
+import { DeployButton } from '@/components/deploy-button';
+import { StarButton } from '@/components/star-button';
 
 export const metadata: Metadata = {
-  title: "Reasoning Preview",
+  title: 'Reasoning Preview',
   description:
-    "This is a preview of using reasoning models with Next.js and the AI SDK.",
+    'This is a preview of using reasoning models with Next.js and the AI SDK.',
 };
 
 export default function RootLayout({
@@ -37,7 +38,7 @@ export default function RootLayout({
                     strokeLinejoin="round"
                     viewBox="0 0 16 16"
                     width={18}
-                    style={{ color: "currentcolor" }}
+                    style={{ color: 'currentcolor' }}
                   >
                     <path
                       fillRule="evenodd"
@@ -54,7 +55,7 @@ export default function RootLayout({
                     strokeLinejoin="round"
                     viewBox="0 0 16 16"
                     width={16}
-                    style={{ color: "currentcolor" }}
+                    style={{ color: 'currentcolor' }}
                   >
                     <path
                       fillRule="evenodd"
@@ -74,7 +75,7 @@ export default function RootLayout({
                           strokeLinejoin="round"
                           viewBox="0 0 16 16"
                           width={16}
-                          style={{ color: "currentcolor" }}
+                          style={{ color: 'currentcolor' }}
                         >
                           <path
                             d="M2.5 0.5V0H3.5V0.5C3.5 1.60457 4.39543 2.5 5.5 2.5H6V3V3.5H5.5C4.39543 3.5 3.5 4.39543 3.5 5.5V6H3H2.5V5.5C2.5 4.39543 1.60457 3.5 0.5 3.5H0V3V2.5H0.5C1.60457 2.5 2.5 1.60457 2.5 0.5Z"
@@ -91,7 +92,7 @@ export default function RootLayout({
                         </svg>
                       </div>
                       <div className="jsx-e3e12cc6f9ad5a71 text-lg font-bold text-zinc-800 dark:text-zinc-100">
-                        AI{" "}
+                        AI{' '}
                         <span className="jsx-e3e12cc6f9ad5a71 hidden min-[385px]:inline">
                           SDK
                         </span>
@@ -102,6 +103,7 @@ export default function RootLayout({
               </span>
             </div>
             <div className="flex flex-row items-center gap-2 shrink-0">
+              <StarButton />
               <DeployButton />
             </div>
           </div>
