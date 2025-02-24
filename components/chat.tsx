@@ -15,7 +15,7 @@ export function Chat() {
   const [selectedModelId] = useState<string>("claude-3.7-sonnet");
   const selectedModel = models.find((model) => model.id === selectedModelId);
 
-  const [isReasoningEnabled, setIsReasoningEnabled] = useState<boolean>(true);
+  const [isReasoningEnabled] = useState<boolean>(true);
 
   const { messages, append, status, stop } = useChat({
     id: "primary",
@@ -23,6 +23,7 @@ export function Chat() {
       selectedModelId,
       isReasoningEnabled,
     },
+    sendExtraMessageFields: true,
     onError: () => {
       toast.error("An error occurred, please try again!");
     },
@@ -66,7 +67,8 @@ export function Chat() {
             <div
               className="relative w-fit text-sm p-1.5 rounded-lg flex flex-row items-center gap-2 dark:hover:bg-zinc-600 dark:bg-zinc-700 hover:bg-zinc-200 bg-zinc-200 cursor-pointer"
               onClick={() => {
-                setIsReasoningEnabled(!isReasoningEnabled);
+                // TODO: Implement reasoning toggle functionality
+                // setIsReasoningEnabled(!isReasoningEnabled);
               }}
             >
               {isReasoningEnabled ? <CheckedSquare /> : <UncheckedSquare />}

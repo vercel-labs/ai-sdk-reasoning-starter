@@ -1,21 +1,27 @@
-'use client';
+"use client";
 
-import cn from 'classnames';
-import Markdown from 'react-markdown';
-import { markdownComponents } from './markdown-components';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronDownIcon, ChevronUpIcon, SpinnerIcon } from './icons';
-import { UIMessage } from 'ai';
-import { UseChatHelpers } from '@ai-sdk/react';
+import cn from "classnames";
+import Markdown from "react-markdown";
+import { markdownComponents } from "./markdown-components";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ChevronDownIcon, ChevronUpIcon, SpinnerIcon } from "./icons";
+import { UIMessage } from "ai";
+import { UseChatHelpers } from "@ai-sdk/react";
+
+interface ReasoningPart {
+  type: "reasoning";
+  reasoning: string;
+  details: Array<{ type: "text"; text: string }>;
+}
 
 interface ReasoningMessagePartProps {
-  reasoning: string;
+  part: ReasoningPart;
   isReasoning: boolean;
 }
 
 export function ReasoningMessagePart({
-  reasoning,
+  part,
   isReasoning,
 }: ReasoningMessagePartProps) {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -28,9 +34,9 @@ export function ReasoningMessagePart({
       marginBottom: 0,
     },
     expanded: {
-      height: 'auto',
+      height: "auto",
       opacity: 1,
-      marginTop: '1rem',
+      marginTop: "1rem",
       marginBottom: 0,
     },
   };
@@ -49,10 +55,10 @@ export function ReasoningMessagePart({
           <div className="font-medium text-sm">Reasoned for a few seconds</div>
           <button
             className={cn(
-              'cursor-pointer rounded-full dark:hover:bg-zinc-800 hover:bg-zinc-200',
+              "cursor-pointer rounded-full dark:hover:bg-zinc-800 hover:bg-zinc-200",
               {
-                'dark:bg-zinc-800 bg-zinc-200': isExpanded,
-              }
+                "dark:bg-zinc-800 bg-zinc-200": isExpanded,
+              },
             )}
             onClick={() => {
               setIsExpanded(!isExpanded);
@@ -72,9 +78,9 @@ export function ReasoningMessagePart({
             animate="expanded"
             exit="collapsed"
             variants={variants}
-            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
           >
-            {/* {part.reasoningDetails.map((detail, detailIndex) =>
+            {part.details.map((detail, detailIndex) =>
               detail.type === "text" ? (
                 <Markdown key={detailIndex} components={markdownComponents}>
                   {detail.text}
@@ -82,8 +88,9 @@ export function ReasoningMessagePart({
               ) : (
                 "<redacted>"
               ),
-            )} */}
-            <Markdown components={markdownComponents}>{reasoning}</Markdown>
+            )}
+
+            {/* <Markdown components={markdownComponents}>{reasoning}</Markdown> */}
           </motion.div>
         )}
       </AnimatePresence>
@@ -105,7 +112,7 @@ export function TextMessagePart({ text }: TextMessagePartProps) {
 
 interface MessagesProps {
   messages: Array<UIMessage>;
-  status: UseChatHelpers['status'];
+  status: UseChatHelpers["status"];
 }
 
 export function Messages({ messages, status }: MessagesProps) {
@@ -127,18 +134,18 @@ export function Messages({ messages, status }: MessagesProps) {
         <div
           key={message.id}
           className={cn(
-            'flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-16 md:w-1/2 w-full'
+            "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-16 md:w-1/2 w-full",
           )}
         >
           <div
-            className={cn('flex flex-col gap-4', {
-              'dark:bg-zinc-800 bg-zinc-200 p-2 rounded-xl w-fit ml-auto':
-                message.role === 'user',
-              '': message.role === 'assistant',
+            className={cn("flex flex-col gap-4", {
+              "dark:bg-zinc-800 bg-zinc-200 p-2 rounded-xl w-fit ml-auto":
+                message.role === "user",
+              "": message.role === "assistant",
             })}
           >
             {message.parts.map((part, partIndex) => {
-              if (part.type === 'text') {
+              if (part.type === "text") {
                 return (
                   <TextMessagePart
                     key={`${message.id}-${partIndex}`}
@@ -147,13 +154,14 @@ export function Messages({ messages, status }: MessagesProps) {
                 );
               }
 
-              if (part.type === 'reasoning') {
+              if (part.type === "reasoning") {
                 return (
                   <ReasoningMessagePart
                     key={`${message.id}-${partIndex}`}
-                    reasoning={part.reasoning}
+                    // @ts-expect-error export ReasoningUIPart
+                    part={part}
                     isReasoning={
-                      status === 'streaming' &&
+                      status === "streaming" &&
                       partIndex === message.parts.length - 1
                     }
                   />
@@ -164,7 +172,7 @@ export function Messages({ messages, status }: MessagesProps) {
         </div>
       ))}
 
-      {status === 'submitted' && (
+      {status === "submitted" && (
         <div className="text-zinc-500 mb-12 md:w-1/2 w-full">Hmm...</div>
       )}
     </div>
