@@ -6,11 +6,14 @@ export async function POST(request: NextRequest) {
   const {
     messages,
     selectedModelId,
+    isReasoningEnabled,
   }: {
     messages: Array<Message>;
     selectedModelId: string;
     isReasoningEnabled: boolean;
   } = await request.json();
+
+  console.log({ isReasoningEnabled });
 
   const stream = streamText({
     system:
@@ -18,7 +21,7 @@ export async function POST(request: NextRequest) {
     providerOptions: {
       anthropic: {
         thinking: {
-          type: "enabled",
+          type: isReasoningEnabled ? "enabled" : "disabled",
           budgetTokens: 12000,
         },
       },

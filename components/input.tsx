@@ -8,6 +8,7 @@ interface InputProps {
   setInput: (value: string) => void;
   selectedModelId: string;
   isGeneratingResponse: boolean;
+  isReasoningEnabled: boolean;
 }
 
 export function Input({
@@ -15,11 +16,13 @@ export function Input({
   setInput,
   selectedModelId,
   isGeneratingResponse,
+  isReasoningEnabled,
 }: InputProps) {
   const { append } = useChat({
     id: "primary",
     body: {
       selectedModelId,
+      isReasoningEnabled,
     },
     onError: () => {
       toast.error("An error occurred, please try again!");
