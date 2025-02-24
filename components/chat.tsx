@@ -12,7 +12,8 @@ import { Input } from "./input";
 
 export function Chat() {
   const [input, setInput] = useState<string>("");
-  const [selectedModelId] = useState<string>("claude-3.7-sonnet");
+  const [selectedModelId, setSelectedModelId] =
+    useState<string>("claude-3.7-sonnet");
   const selectedModel = models.find((model) => model.id === selectedModelId);
 
   const { messages, append, status, stop } = useChat({
@@ -30,7 +31,7 @@ export function Chat() {
   return (
     <div
       className={cn(
-        "px-4 md:px-0 pb-4 flex flex-col h-dvh items-center w-full",
+        "px-4 md:px-0 pb-4 pt-8 flex flex-col h-dvh items-center w-full",
         {
           "justify-between": messages.length > 0,
           "justify-center gap-4": messages.length === 0,
@@ -68,9 +69,12 @@ export function Chat() {
                 <ChevronDownIcon />
               </div>
 
-              <select className="absolute opacity-0 w-full p-1 left-0 cursor-pointer">
-                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                <option value="gpt-4">GPT-4</option>
+              <select
+                className="absolute opacity-0 w-full p-1 left-0 cursor-pointer"
+                onChange={(event) => setSelectedModelId(event.target.value)}
+              >
+                <option value="claude-3.7-sonnet">Claude 3.7 Sonnet</option>
+                <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
               </select>
             </div>
 
