@@ -1,7 +1,14 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["geist"],
+  transpilePackages: ['geist'],
+  images: {
+    remotePatterns: [
+      {
+        hostname: 'vercel.com',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
