@@ -12,7 +12,7 @@ import { Input } from "./input";
 
 export function Chat() {
   const [input, setInput] = useState<string>("");
-  const [selectedModelId] = useState<string>("claude-3.5-sonnet");
+  const [selectedModelId] = useState<string>("claude-3.7-sonnet");
   const selectedModel = models.find((model) => model.id === selectedModelId);
 
   const [isReasoningEnabled, setIsReasoningEnabled] = useState<boolean>(true);
