@@ -7,19 +7,21 @@ import { useState } from "react";
 import { Messages } from "./messages";
 import { models } from "@/lib/models";
 import { Footnote } from "./footnote";
-import { ArrowUpIcon, ChevronDownIcon, StopIcon } from "./icons";
+import { ArrowUpIcon, CheckedSquare, StopIcon, UncheckedSquare } from "./icons";
 import { Input } from "./input";
 
 export function Chat() {
   const [input, setInput] = useState<string>("");
-  const [selectedModelId, setSelectedModelId] =
-    useState<string>("claude-3.7-sonnet");
+  const [selectedModelId] = useState<string>("claude-3.7-sonnet");
   const selectedModel = models.find((model) => model.id === selectedModelId);
+
+  const [isReasoningEnabled, setIsReasoningEnabled] = useState<boolean>(true);
 
   const { messages, append, status, stop } = useChat({
     id: "primary",
     body: {
       selectedModelId,
+      isReasoningEnabled,
     },
     onError: () => {
       toast.error("An error occurred, please try again!");
@@ -60,22 +62,34 @@ export function Chat() {
             isGeneratingResponse={isGeneratingResponse}
           />
 
+          <div className="absolute bottom-2.5 left-2.5">
+            <div
+              className="relative w-fit text-sm p-1.5 rounded-lg flex flex-row items-center gap-2 dark:hover:bg-zinc-600 dark:bg-zinc-700 hover:bg-zinc-200 bg-zinc-200 cursor-pointer"
+              onClick={() => {
+                setIsReasoningEnabled(!isReasoningEnabled);
+              }}
+            >
+              {isReasoningEnabled ? <CheckedSquare /> : <UncheckedSquare />}
+              <div>Reasoning</div>
+            </div>
+          </div>
+
           <div className="absolute bottom-2.5 right-2.5 flex flex-row gap-2">
             <div className="relative w-fit text-sm p-1.5 rounded-lg flex flex-row items-center gap-0.5 dark:hover:bg-zinc-700 hover:bg-zinc-200 cursor-pointer">
               <div>
                 {selectedModel ? selectedModel.name : "Models Unavailable!"}
               </div>
-              <div className="text-zinc-500">
+              {/* <div className="text-zinc-500">
                 <ChevronDownIcon />
-              </div>
+              </div> */}
 
-              <select
+              {/* <select
                 className="absolute opacity-0 w-full p-1 left-0 cursor-pointer"
                 onChange={(event) => setSelectedModelId(event.target.value)}
               >
                 <option value="claude-3.7-sonnet">Claude 3.7 Sonnet</option>
                 <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
-              </select>
+              </select> */}
             </div>
 
             <button
