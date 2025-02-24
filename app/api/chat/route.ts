@@ -13,8 +13,6 @@ export async function POST(request: NextRequest) {
     isReasoningEnabled: boolean;
   } = await request.json();
 
-  console.log({ isReasoningEnabled });
-
   const stream = streamText({
     system:
       "you are a friendly assistant. do not use emojis in your responses.",
