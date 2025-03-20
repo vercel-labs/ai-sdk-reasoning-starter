@@ -1,30 +1,47 @@
-import { customProvider } from "ai";
 import { anthropic } from "@ai-sdk/anthropic";
+import { fireworks } from "@ai-sdk/fireworks";
+import { groq } from "@ai-sdk/groq";
+import {
+  customProvider,
+  extractReasoningMiddleware,
+  wrapLanguageModel,
+  defaultSettingsMiddleware,
+} from "ai";
 
+// custom provider with different model settings:
 export const myProvider = customProvider({
   languageModels: {
-    "claude-3.7-sonnet": anthropic("claude-3-7-sonnet-20250219"),
-    "claude-3.5-sonnet": anthropic("claude-3-5-sonnet-latest"),
+    "sonnet-3.7": wrapLanguageModel({
+      middleware: defaultSettingsMiddleware({
+        settings: {
+          providerMetadata: {
+            anthropic: {
+              thinking: { type: "enabled", budgetTokens: 5000 },
+            },
+          },
+        },
+      }),
+      model: anthropic("claude-3-7-sonnet-20250219"),
+    }),
+    "deepseek-r1": wrapLanguageModel({
+      middleware: extractReasoningMiddleware({
+        tagName: "think",
+      }),
+      model: fireworks("accounts/fireworks/models/deepseek-r1"),
+    }),
+    "deepseek-r1-distill-llama-70b": wrapLanguageModel({
+      middleware: extractReasoningMiddleware({
+        tagName: "think",
+      }),
+      model: groq("deepseek-r1-distill-llama-70b"),
+    }),
   },
 });
 
-interface Model {
-  id: string;
-  name: string;
-  description: string;
-}
+export type modelID = Parameters<(typeof myProvider)["languageModel"]>["0"];
 
-export const models: Array<Model> = [
-  {
-    id: "claude-3.7-sonnet",
-    name: "Claude 3.7 Sonnet",
-    description:
-      "Claude 3.7 Sonnet is Anthropic's most intelligent model to date and the first Claude model to offer extended thinking – the ability to solve complex problems with careful, step-by-step reasoning.",
-  },
-  {
-    id: "claude-3.5-sonnet",
-    name: "Claude 3.5 Sonnet",
-    description:
-      "Claude 3.5 Sonnet strikes the ideal balance between intelligence and speed—particularly for enterprise workloads.",
-  },
-];
+export const models: Record<modelID, string> = {
+  "sonnet-3.7": "Claude Sonnet 3.7",
+  "deepseek-r1": "DeepSeek-R1",
+  "deepseek-r1-distill-llama-70b": "DeepSeek-R1 Llama 70B",
+};

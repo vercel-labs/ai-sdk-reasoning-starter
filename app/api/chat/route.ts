@@ -1,4 +1,4 @@
-import { myProvider } from "@/lib/models";
+import { modelID, myProvider } from "@/lib/models";
 import { Message, smoothStream, streamText } from "ai";
 import { NextRequest } from "next/server";
 
@@ -9,21 +9,24 @@ export async function POST(request: NextRequest) {
     isReasoningEnabled,
   }: {
     messages: Array<Message>;
-    selectedModelId: string;
+    selectedModelId: modelID;
     isReasoningEnabled: boolean;
   } = await request.json();
 
   const stream = streamText({
     system:
       "you are a friendly assistant. do not use emojis in your responses.",
-    providerOptions: {
-      anthropic: {
-        thinking: {
-          type: isReasoningEnabled ? "enabled" : "disabled",
-          budgetTokens: 12000,
-        },
-      },
-    },
+    providerOptions:
+      selectedModelId === "sonnet-3.7" && isReasoningEnabled === false
+        ? {
+            anthropic: {
+              thinking: {
+                type: "disabled",
+                budgetTokens: 12000,
+              },
+            },
+          }
+        : {},
     model: myProvider.languageModel(selectedModelId),
     experimental_transform: [
       smoothStream({
