@@ -33,7 +33,7 @@ export function Chat() {
   return (
     <div
       className={cn(
-        "px-4 md:px-0 pb-4 pt-8 flex flex-col h-dvh items-center w-full",
+        "px-4 md:px-0 pb-4 pt-8 flex flex-col h-dvh items-center w-full max-w-3xl",
         {
           "justify-between": messages.length > 0,
           "justify-center gap-4": messages.length === 0,
@@ -43,7 +43,7 @@ export function Chat() {
       {messages.length > 0 ? (
         <Messages messages={messages} status={status} />
       ) : (
-        <div className="flex flex-col gap-0.5 sm:text-2xl text-xl max-w-lg w-full">
+        <div className="flex flex-col gap-0.5 sm:text-2xl text-xl w-full">
           <div className="flex flex-row gap-2 items-center">
             <div>Welcome to the AI SDK Reasoning Preview.</div>
           </div>
@@ -53,7 +53,7 @@ export function Chat() {
         </div>
       )}
 
-      <div className="flex flex-col gap-4 max-w-lg w-full">
+      <div className="flex flex-col gap-4 w-full">
         <div className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1 bg-zinc-100">
           <Input
             input={input}
