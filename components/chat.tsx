@@ -86,7 +86,7 @@ export function Chat() {
               {/* <div>
                 {selectedModel ? selectedModel.name : "Models Unavailable!"}
               </div> */}
-              <div className="flex justify-center items-center text-zinc-500 px-1">
+              <div className="flex justify-center items-center text-zinc-500 dark:text-zinc-400 px-1">
                 <span className="pr-1">{models[selectedModelId]}</span>
                 <ChevronDownIcon />
               </div>
