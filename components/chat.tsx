@@ -5,17 +5,21 @@ import { toast } from "sonner";
 import { useChat } from "@ai-sdk/react";
 import { useState } from "react";
 import { Messages } from "./messages";
-import { models } from "@/lib/models";
+import { modelID, models } from "@/lib/models";
 import { Footnote } from "./footnote";
-import { ArrowUpIcon, CheckedSquare, StopIcon, UncheckedSquare } from "./icons";
+import {
+  ArrowUpIcon,
+  CheckedSquare,
+  ChevronDownIcon,
+  StopIcon,
+  UncheckedSquare,
+} from "./icons";
 import { Input } from "./input";
 
 export function Chat() {
   const [input, setInput] = useState<string>("");
-  const [selectedModelId] = useState<string>("claude-3.7-sonnet");
+  const [selectedModelId, setSelectedModelId] = useState<modelID>("sonnet-3.7");
   const [isReasoningEnabled, setIsReasoningEnabled] = useState<boolean>(true);
-
-  const selectedModel = models.find((model) => model.id === selectedModelId);
 
   const { messages, append, status, stop } = useChat({
     id: "primary",
@@ -29,7 +33,7 @@ export function Chat() {
   return (
     <div
       className={cn(
-        "px-4 md:px-0 pb-4 pt-8 flex flex-col h-dvh items-center w-full",
+        "px-4 md:px-0 pb-4 pt-8 flex flex-col h-dvh items-center w-full max-w-3xl",
         {
           "justify-between": messages.length > 0,
           "justify-center gap-4": messages.length === 0,
@@ -39,7 +43,7 @@ export function Chat() {
       {messages.length > 0 ? (
         <Messages messages={messages} status={status} />
       ) : (
-        <div className="flex flex-col gap-0.5 sm:text-2xl text-xl md:w-1/2 w-full">
+        <div className="flex flex-col gap-0.5 sm:text-2xl text-xl w-full">
           <div className="flex flex-row gap-2 items-center">
             <div>Welcome to the AI SDK Reasoning Preview.</div>
           </div>
@@ -49,7 +53,7 @@ export function Chat() {
         </div>
       )}
 
-      <div className="flex flex-col gap-4 md:w-1/2 w-full">
+      <div className="flex flex-col gap-4 w-full">
         <div className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1 bg-zinc-100">
           <Input
             input={input}
@@ -60,9 +64,10 @@ export function Chat() {
           />
 
           <div className="absolute bottom-2.5 left-2.5">
-            <div
+            <button
+              disabled={selectedModelId !== "sonnet-3.7"}
               className={cn(
-                "relative w-fit text-sm p-1.5 rounded-lg flex flex-row items-center gap-2 dark:hover:bg-zinc-600 hover:bg-zinc-200 cursor-pointer",
+                "relative w-fit text-sm p-1.5 rounded-lg flex flex-row items-center gap-2 dark:hover:bg-zinc-600 hover:bg-zinc-200 cursor-pointer disabled:opacity-50",
                 {
                   "dark:bg-zinc-600 bg-zinc-200": isReasoningEnabled,
                 },
@@ -73,25 +78,35 @@ export function Chat() {
             >
               {isReasoningEnabled ? <CheckedSquare /> : <UncheckedSquare />}
               <div>Reasoning</div>
-            </div>
+            </button>
           </div>
 
           <div className="absolute bottom-2.5 right-2.5 flex flex-row gap-2">
             <div className="relative w-fit text-sm p-1.5 rounded-lg flex flex-row items-center gap-0.5 dark:hover:bg-zinc-700 hover:bg-zinc-200 cursor-pointer">
-              <div>
+              {/* <div>
                 {selectedModel ? selectedModel.name : "Models Unavailable!"}
-              </div>
-              {/* <div className="text-zinc-500">
-                <ChevronDownIcon />
               </div> */}
+              <div className="flex justify-center items-center text-zinc-500 dark:text-zinc-400 px-1">
+                <span className="pr-1">{models[selectedModelId]}</span>
+                <ChevronDownIcon />
+              </div>
 
-              {/* <select
+              <select
                 className="absolute opacity-0 w-full p-1 left-0 cursor-pointer"
-                onChange={(event) => setSelectedModelId(event.target.value)}
+                value={selectedModelId}
+                onChange={(event) => {
+                  if (event.target.value !== "sonnet-3.7") {
+                    setIsReasoningEnabled(true);
+                  }
+                  setSelectedModelId(event.target.value as modelID);
+                }}
               >
-                <option value="claude-3.7-sonnet">Claude 3.7 Sonnet</option>
-                <option value="claude-3.5-sonnet">Claude 3.5 Sonnet</option>
-              </select> */}
+                {Object.entries(models).map(([id, name]) => (
+                  <option key={id} value={id}>
+                    {name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <button

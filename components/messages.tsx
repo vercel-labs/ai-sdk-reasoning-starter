@@ -41,6 +41,12 @@ export function ReasoningMessagePart({
     },
   };
 
+  useEffect(() => {
+    if (!isReasoning) {
+      setIsExpanded(false);
+    }
+  }, [isReasoning]);
+
   return (
     <div className="flex flex-col">
       {isReasoning ? (
@@ -134,7 +140,7 @@ export function Messages({ messages, status }: MessagesProps) {
         <div
           key={message.id}
           className={cn(
-            "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-16 md:w-1/2 w-full",
+            "flex flex-col gap-4 last-of-type:mb-12 first-of-type:mt-16 w-full",
           )}
         >
           <div
@@ -173,7 +179,7 @@ export function Messages({ messages, status }: MessagesProps) {
       ))}
 
       {status === "submitted" && (
-        <div className="text-zinc-500 mb-12 md:w-1/2 w-full">Hmm...</div>
+        <div className="text-zinc-500 mb-12 w-full">Hmm...</div>
       )}
     </div>
   );

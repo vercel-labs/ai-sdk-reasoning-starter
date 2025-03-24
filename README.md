@@ -4,7 +4,7 @@
 </a>
 
 <p align="center">
-  An Open-Source AI Chatbot Template Built With Next.js, Anthropic's Claude 3.7 Sonnet, and the AI SDK by Vercel.
+  An Open-Source AI Chatbot Template Built With Next.js and the AI SDK by Vercel.
 </p>
 
 <p align="center">
@@ -31,7 +31,7 @@
 
 You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-sdk-preview-reasoning%2Ftree%2Fmain&env=ANTHROPIC_API_KEY&envDescription=Anthropic%20API%20key&envLink=https%3A%2F%2Fconsole.anthropic.com%2F)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel-labs%2Fai-sdk-preview-reasoning%2Ftree%2Fmain&env=ANTHROPIC_API_KEY,FIREWORKS_API_KEY,GROQ_API_KEY&envDescription=Anthropic%20API%20key&envLink=https%3A%2F%2Fconsole.anthropic.com%2F)
 
 ## Running locally
 
