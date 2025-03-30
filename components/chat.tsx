@@ -23,6 +23,10 @@ export function Chat() {
 
   const { messages, append, status, stop } = useChat({
     id: "primary",
+    body: {
+      selectedModelId,
+      isReasoningEnabled,
+    },
     onError: () => {
       toast.error("An error occurred, please try again!");
     },
