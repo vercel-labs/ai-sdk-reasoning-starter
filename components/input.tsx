@@ -14,9 +14,7 @@ interface InputProps {
 export function Input({
   input,
   setInput,
-  selectedModelId,
   isGeneratingResponse,
-  isReasoningEnabled,
   onSubmit,
 }: InputProps) {
 
