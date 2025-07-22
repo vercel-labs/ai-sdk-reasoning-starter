@@ -21,7 +21,7 @@ export function Chat() {
   const [selectedModelId, setSelectedModelId] = useState<modelID>("sonnet-3.7");
   const [isReasoningEnabled, setIsReasoningEnabled] = useState<boolean>(true);
 
-  const { messages, append, status, stop } = useChat({
+  const { messages, sendMessage, status, stop } = useChat({
     id: "primary",
     onError: () => {
       toast.error("An error occurred, please try again!");
@@ -54,13 +54,28 @@ export function Chat() {
       )}
 
       <div className="flex flex-col gap-4 w-full">
-        <div className="w-full relative p-3 dark:bg-zinc-800 rounded-2xl flex flex-col gap-1 bg-zinc-100">
+        <div className="flex relative flex-col gap-1 p-3 w-full rounded-2xl dark:bg-zinc-800 bg-zinc-100">
           <Input
             input={input}
             setInput={setInput}
             selectedModelId={selectedModelId}
             isGeneratingResponse={isGeneratingResponse}
             isReasoningEnabled={isReasoningEnabled}
+            onSubmit={() => {
+              if (input === "") {
+                return;
+              }
+              sendMessage(
+                { text: input },
+                {
+                  body: {
+                    selectedModelId,
+                    isReasoningEnabled,
+                  },
+                }
+              );
+              setInput("");
+            }}
           />
 
           <div className="absolute bottom-2.5 left-2.5">
@@ -86,13 +101,13 @@ export function Chat() {
               {/* <div>
                 {selectedModel ? selectedModel.name : "Models Unavailable!"}
               </div> */}
-              <div className="flex justify-center items-center text-zinc-500 dark:text-zinc-400 px-1">
+              <div className="flex justify-center items-center px-1 text-zinc-500 dark:text-zinc-400">
                 <span className="pr-1">{models[selectedModelId]}</span>
                 <ChevronDownIcon />
               </div>
 
               <select
-                className="absolute opacity-0 w-full p-1 left-0 cursor-pointer"
+                className="absolute left-0 p-1 w-full opacity-0 cursor-pointer"
                 value={selectedModelId}
                 onChange={(event) => {
                   if (event.target.value !== "sonnet-3.7") {
@@ -125,11 +140,15 @@ export function Chat() {
                 if (isGeneratingResponse) {
                   stop();
                 } else {
-                  append({
-                    role: "user",
-                    content: input,
-                    createdAt: new Date(),
-                  });
+                  sendMessage(
+                    { text: input },
+                    {
+                      body: {
+                        selectedModelId,
+                        isReasoningEnabled,
+                      },
+                    }
+                  );
                 }
 
                 setInput("");

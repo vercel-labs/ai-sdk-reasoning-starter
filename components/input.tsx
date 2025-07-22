@@ -1,6 +1,5 @@
 "use client";
 
-import { useChat } from "@ai-sdk/react";
 import { toast } from "sonner";
 
 interface InputProps {
@@ -9,29 +8,19 @@ interface InputProps {
   selectedModelId: string;
   isGeneratingResponse: boolean;
   isReasoningEnabled: boolean;
+  onSubmit: () => void;
 }
 
 export function Input({
   input,
   setInput,
-  selectedModelId,
   isGeneratingResponse,
-  isReasoningEnabled,
+  onSubmit,
 }: InputProps) {
-  const { append } = useChat({
-    id: "primary",
-    body: {
-      selectedModelId,
-      isReasoningEnabled,
-    },
-    onError: () => {
-      toast.error("An error occurred, please try again!");
-    },
-  });
 
   return (
     <textarea
-      className="mb-12 resize-none w-full min-h-12 outline-none bg-transparent placeholder:text-zinc-400"
+      className="mb-12 w-full bg-transparent outline-none resize-none min-h-12 placeholder:text-zinc-400"
       placeholder="Send a message"
       value={input}
       autoFocus
@@ -52,13 +41,7 @@ export function Input({
             return;
           }
 
-          append({
-            role: "user",
-            content: input,
-            createdAt: new Date(),
-          });
-
-          setInput("");
+          onSubmit();
         }
       }}
     />
