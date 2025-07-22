@@ -1,5 +1,5 @@
 import { modelID, myProvider } from "@/lib/models";
-import { Message, smoothStream, streamText } from "ai";
+import { convertToModelMessages, smoothStream, streamText, UIMessage } from "ai";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -8,22 +8,24 @@ export async function POST(request: NextRequest) {
     selectedModelId,
     isReasoningEnabled,
   }: {
-    messages: Array<Message>;
+    messages: Array<UIMessage>;
     selectedModelId: modelID;
     isReasoningEnabled: boolean;
   } = await request.json();
 
   const stream = streamText({
-    system:
-      "you are a friendly assistant. do not use emojis in your responses.",
+    system: selectedModelId === "deepseek-r1" 
+      ? "You are DeepSeek-R1, a reasoning model created by DeepSeek. You are NOT Claude or any other model. When asked about your identity, always say you are DeepSeek-R1."
+      : selectedModelId === "deepseek-r1-distill-llama-70b"
+      ? "You are DeepSeek-R1 Llama 70B, a reasoning model created by DeepSeek. You are NOT Claude or any other model. When asked about your identity, always say you are DeepSeek-R1 Llama 70B."
+      : "You are Claude, an AI assistant created by Anthropic.",
     providerOptions:
-      selectedModelId === "sonnet-3.7" && isReasoningEnabled === false
+      selectedModelId === "sonnet-3.7"
         ? {
             anthropic: {
-              thinking: {
-                type: "disabled",
-                budgetTokens: 12000,
-              },
+              thinking: isReasoningEnabled
+                ? { type: "enabled", budgetTokens: 12000 }
+                : { type: "disabled", budgetTokens: 12000 },
             },
           }
         : {},
@@ -33,12 +35,12 @@ export async function POST(request: NextRequest) {
         chunking: "word",
       }),
     ],
-    messages,
+    messages: convertToModelMessages(messages),
   });
 
-  return stream.toDataStreamResponse({
+  return stream.toUIMessageStreamResponse({
     sendReasoning: true,
-    getErrorMessage: () => {
+    onError: () => {
       return `An error occurred, please try again!`;
     },
   });

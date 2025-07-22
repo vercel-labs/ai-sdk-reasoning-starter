@@ -5,34 +5,26 @@ import {
   customProvider,
   extractReasoningMiddleware,
   wrapLanguageModel,
-  defaultSettingsMiddleware,
 } from "ai";
 
 // custom provider with different model settings:
 export const myProvider = customProvider({
   languageModels: {
-    "sonnet-3.7": wrapLanguageModel({
-      middleware: defaultSettingsMiddleware({
-        settings: {
-          providerMetadata: {
-            anthropic: {
-              thinking: { type: "enabled", budgetTokens: 5000 },
-            },
-          },
-        },
-      }),
-      model: anthropic("claude-3-7-sonnet-20250219"),
-    }),
+    "sonnet-3.7": anthropic("claude-3-7-sonnet-20250219"),
     "deepseek-r1": wrapLanguageModel({
-      middleware: extractReasoningMiddleware({
-        tagName: "think",
-      }),
+      middleware: [
+        extractReasoningMiddleware({
+          tagName: "think",
+        }),
+      ],
       model: fireworks("accounts/fireworks/models/deepseek-r1"),
     }),
     "deepseek-r1-distill-llama-70b": wrapLanguageModel({
-      middleware: extractReasoningMiddleware({
-        tagName: "think",
-      }),
+      middleware: [
+        extractReasoningMiddleware({
+          tagName: "think",
+        }),
+      ],
       model: groq("deepseek-r1-distill-llama-70b"),
     }),
   },
