@@ -1,8 +1,7 @@
 "use client";
 
 import cn from "classnames";
-import Markdown from "react-markdown";
-import { markdownComponents } from "./markdown-components";
+import { Streamdown } from "streamdown";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon, SpinnerIcon } from "./icons";
@@ -84,11 +83,9 @@ export function ReasoningMessagePart({
             variants={variants}
             transition={{ duration: 0.2, ease: "easeInOut" }}
           >
-            <Markdown components={markdownComponents}>
+            <Streamdown>
               {part.text}
-            </Markdown>
-
-            {/* <Markdown components={markdownComponents}>{reasoning}</Markdown> */}
+            </Streamdown>
           </motion.div>
         )}
       </AnimatePresence>
@@ -103,7 +100,7 @@ interface TextMessagePartProps {
 export function TextMessagePart({ text }: TextMessagePartProps) {
   return (
     <div className="flex flex-col gap-4">
-      <Markdown components={markdownComponents}>{text}</Markdown>
+      <Streamdown>{text}</Streamdown>
     </div>
   );
 }
