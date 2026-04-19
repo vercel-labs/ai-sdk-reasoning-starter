@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
   } = await request.json();
 
   const anthropic = createAnthropic({
-    baseURL: "https://ai-gateway.vercel.sh",
+    baseURL: "https://ai-gateway.vercel.sh/v1",
     apiKey: await getVercelOidcToken(),
   });
 
