@@ -1,8 +1,20 @@
-import { myProvider } from "@/lib/models";
+import { createAnthropic } from "@ai-sdk/anthropic";
+import { getVercelOidcToken } from "@vercel/functions/oidc";
 import { Message, smoothStream, streamText } from "ai";
+import { checkBotId } from "botid/server";
 import { NextRequest } from "next/server";
 
+const MODEL_IDS: Record<string, string> = {
+  "claude-3.7-sonnet": "anthropic/claude-3.7-sonnet",
+  "claude-3.5-sonnet": "anthropic/claude-sonnet-4.5",
+};
+
 export async function POST(request: NextRequest) {
+  const { isBot } = await checkBotId();
+  if (isBot) {
+    return new Response("Access denied", { status: 403 });
+  }
+
   const {
     messages,
     selectedModelId,
@@ -11,6 +23,13 @@ export async function POST(request: NextRequest) {
     selectedModelId: string;
     isReasoningEnabled: boolean;
   } = await request.json();
+
+  const anthropic = createAnthropic({
+    baseURL: "https://ai-gateway.vercel.sh/v1",
+    apiKey: await getVercelOidcToken(),
+  });
+
+  const modelId = MODEL_IDS[selectedModelId] ?? MODEL_IDS["claude-3.7-sonnet"];
 
   const stream = streamText({
     system:
@@ -23,7 +42,7 @@ export async function POST(request: NextRequest) {
         },
       },
     },
-    model: myProvider.languageModel(selectedModelId),
+    model: anthropic(modelId),
     experimental_transform: [
       smoothStream({
         chunking: "word",
@@ -34,8 +53,9 @@ export async function POST(request: NextRequest) {
 
   return stream.toDataStreamResponse({
     sendReasoning: true,
-    getErrorMessage: () => {
-      return `An error occurred, please try again!`;
+    getErrorMessage: (error) => {
+      console.error("streamText error:", error);
+      return `An error occurred: ${error instanceof Error ? error.message : String(error)}`;
     },
   });
 }

@@ -7,7 +7,14 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { DeployButton } from "@/components/deploy-button";
 import { StarButton } from "@/components/star-button";
-import { KasadaClient } from "@/lib/kasada/kasada-client";
+import { BotIdClient } from "botid/client";
+
+const protectedRoutes = [
+  {
+    path: "/api/chat",
+    method: "POST",
+  },
+];
 
 export const metadata: Metadata = {
   title: "Reasoning Preview",
@@ -22,7 +29,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <KasadaClient />
+      <head>
+        <BotIdClient protect={protectedRoutes} />
+      </head>
       <body>
         <div className="fixed right-0 left-0 w-full top-0 bg-white dark:bg-zinc-950">
           <div className="flex justify-between items-center p-4">
