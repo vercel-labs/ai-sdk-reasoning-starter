@@ -53,8 +53,9 @@ export async function POST(request: NextRequest) {
 
   return stream.toDataStreamResponse({
     sendReasoning: true,
-    getErrorMessage: () => {
-      return `An error occurred, please try again!`;
+    getErrorMessage: (error) => {
+      console.error("streamText error:", error);
+      return `An error occurred: ${error instanceof Error ? error.message : String(error)}`;
     },
   });
 }
