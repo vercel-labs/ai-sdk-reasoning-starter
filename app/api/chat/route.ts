@@ -1,8 +1,14 @@
 import { myProvider } from "@/lib/models";
 import { Message, smoothStream, streamText } from "ai";
+import { checkBotId } from "botid/server";
 import { NextRequest } from "next/server";
 
 export async function POST(request: NextRequest) {
+  const { isBot } = await checkBotId();
+  if (isBot) {
+    return new Response("Access denied", { status: 403 });
+  }
+
   const {
     messages,
     selectedModelId,

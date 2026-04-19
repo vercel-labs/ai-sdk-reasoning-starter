@@ -1,5 +1,4 @@
-import { NextResponse, type NextRequest, NextFetchEvent } from "next/server";
-import { kasadaHandler } from "./lib/kasada/kasada-server";
+import { NextResponse, type NextRequest } from "next/server";
 import { kv } from "@vercel/kv";
 import { ipAddress } from "@vercel/functions";
 
@@ -24,7 +23,7 @@ const corsOptions: {
 
 const MAX_REQUESTS = 80;
 
-export async function middleware(req: NextRequest, ev: NextFetchEvent) {
+export async function middleware(req: NextRequest) {
   // Start with the CORS logic
   const response = NextResponse.next();
 
@@ -74,9 +73,6 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
     if (requests > MAX_REQUESTS) {
       return new Response("Too many requests (rate limit)", { status: 429 });
     }
-
-    // Apply Kasada handler
-    return kasadaHandler(req, ev);
   }
 
   return response;
